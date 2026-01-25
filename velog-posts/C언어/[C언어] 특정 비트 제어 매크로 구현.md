@@ -1,0 +1,106 @@
+<p>오늘부터 지금까지 진행했던 비트 연산을 하나씩 진행해볼 예정입니다. 문제는 교수님께서 학생들의 다양한 답변을 위해 만드셨기 때문에, 다소 모호한 부분이 있을 수 있습니다.</p>
+<p>모든 풀이는 윈도우 환경에서 WSL + VSCODE를 이용하여 작성하였습니다. 분명 더 좋은 풀이가 있을것이고, 개인 공부 목적으로 정리하는 내용이기 때문에 정답이 아닐 수 있습니다. 참고만 하시는걸 추천드립니다.</p>
+<hr />
+<h3 id="문제-1-특정-비트-제어-매크로-구현">문제 1. 특정 비트 제어 매크로 구현</h3>
+<p><img alt="" src="https://velog.velcdn.com/images/mommers/post/794b2b39-9d60-4992-ba0e-bfa95c5dcd92/image.png" /></p>
+<p>처음에 이 문제를 접했을때는 C언어에 대한 이해가 글 작성중인 지금보다 떨어졌었기 때문에, 2진수 출력에서부터 막혔었습니다.</p>
+<p>C언어에는 정수를 8진수 <code>%o</code> , 10진수 <code>%d</code> , 16진수 <code>%X</code> 이렇게 3가지 방식으로 출력 서식 지정자가 존재하나, 2진수 출력은 C언어에서 지원해주지 않습니다.</p>
+<p>현재는 매크로 구현을 어떻게 해야할지 몰라서 막힌 상태라, 일단 <code>SET</code> , <code>CLEAR</code> , <code>TOGGLE</code> 을 생각나는 방식대로 함수로 작성해보았습니다.</p>
+<hr />
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdint.h&gt;
+
+/*
+- **입력:** 32비트 정수 `0x12345678`, 조작할 비트 위치(3), 동작(SET/CLEAR/TOGGLE)
+- **출력:** 조작된 16진수 값
+- **제약조건:** `&lt;stdint.h&gt;` 사용, 함수가 아닌 매크로로 구현할 것.
+- **실행결과:** `SET 3rd bit of 0x... -&gt; 0x...`
+*/
+
+uint32_t CLEAR(uint32_t n, int bit);
+uint32_t TOGGLE(uint32_t n, int bit);
+void CHECK(uint32_t n, int bit);
+void PRT_BIT(uint32_t n);
+
+int main()
+{
+
+    uint32_t x = 0x12345678;
+
+    printf(&quot;=== Day 1: Bitwise Macro Test ===\n&quot;);
+
+    PRT_BIT(x);
+    x = CLEAR(x, 4);
+    x = TOGGLE(x, 3);
+    CHECK(x, 3);
+
+    return 0;
+}
+
+void PRT_BIT(uint32_t n)
+{
+    uint32_t set_n;
+    int cnt = 0;
+
+    printf(&quot;Result   Hex: 0x%X | Bin: &quot;, n);
+    for (int i = 31; i &gt;= 0; i--)
+    {
+        set_n = n &gt;&gt; i &amp; 1;
+        printf(&quot;%X&quot;, set_n);
+        cnt++;
+
+        if (cnt % 4 == 0)
+        {
+            printf(&quot; &quot;);
+        }
+    }
+    printf(&quot;\n\n&quot;);
+}
+
+uint32_t CLEAR(uint32_t n, int bit)
+{
+    uint32_t f = 0xFFFFFFFF;
+    printf(&quot;[CLEAR]  Target: Bit %d\n&quot;, bit);
+    n = (n &amp; f &lt;&lt; bit + 1) | (n &amp; f &gt;&gt; (32 - bit));
+    PRT_BIT(n);
+
+    return n;
+}
+
+uint32_t TOGGLE(uint32_t n, int bit)
+{
+    uint32_t f = 0xFFFFFFFF;
+    printf(&quot;[TOGGLE]  Target: Bit %d\n&quot;, bit);
+    n = n ^ (1 &lt;&lt; bit);
+    PRT_BIT(n);
+
+    return n;
+}
+
+void CHECK(uint32_t n, int bit)
+{
+    printf(&quot;[CHECK]  Bit %d is currently: %x\n&quot;, bit, n &amp; (1 &lt;&lt; bit));
+}</code></pre>
+<hr />
+<p><img alt="" src="https://velog.velcdn.com/images/mommers/post/3a076843-1da3-4e2e-aff5-33bd3d8a3342/image.png" /></p>
+<ol>
+<li><p>이진수 표현 아이디어 ( <code>PRT_BIT</code> )
+<code>n=0x12345678</code> 이라는 수를
+<code>0001 0010 0011 0100 0101 0110 0111 1000</code> 으로 나타내는 것이 목표이다.
+맨 앞자리부터 하나씩 출력하는것을 아이디어로 잡았고, <code>0x00000001</code> 과 <code>n&gt;&gt;i</code>를 <code>&amp;</code> 연산을 통해 한 비트씩 출력해주었다.</p>
+</li>
+<li><p><code>CLEAR</code> : 특정 비트를 0으로 clear
+n에서 특정 비트를 0으로 클리어 해주기 위해 n과 특정 비트를 제외한 나머지는 1로 채워진 uint32_t형 정수와 &amp; 연산을 하면 좋겠다고 생각했다. 
+그래서 <code>uint32_t f = 0xFFFFFFFF</code> 로 정수를 하나 선언하고, 특정 비트 + 1만큼 왼쪽으로 shift, 특정 비트만큼 오른쪽으로 shift 한 결과를 OR 비트 연산으로 clear를 위한 정수를 만들었다.</p>
+</li>
+<li><p><code>TOGGLE</code> : 특정 비트를 반전
+n에서 특정 비트를 <code>0-&gt;1, 1-&gt;0</code> 으로 반전시키기 위해서 XOR 연산을 사용하면 될 것 같다고 생각했다.
+0과 1을 XOR 연산을 하면 1이 출력되고, 1과 1을 XOR 연산을 하면 0이 출력된다.
+따라서 n과 1을 왼쪽으로 bit만큼 shift 시킨 값을 XOR 연산 진행해주었다.</p>
+</li>
+<li><p><code>CHECK</code> : n에서 특정 비트의 값을 출력해준다.
+n과 1을 왼쪽으로 bit만큼 shift 시킨 값을 &amp; 연산을 진행해주어 확인한다.</p>
+</li>
+</ol>
+<hr />
+<p>추가로, 매크로로 표현 해보기</p>
