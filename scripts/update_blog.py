@@ -16,13 +16,9 @@ posts_dir = os.path.join(repo_path, 'velog-posts')
 CATEGORIES = {
     'C언어': r'^\[C언어\]',
     'STM32': r'^\[STM32\]',
-    'STM32-NUCLEO': r'^\[STM32-NUCLEO',
-    'STM32F411': r'^\[STM32F411',
-    'STM': r'^\[STM',
     '아두이노': r'^\[아두이노\]',
     '자료구조': r'^\[자료구조\]',
     'Linux': r'^\[Linux\]',
-    '빌트': r'^\[빌트\]',
     '기타': r'^\[.*\]',  # 기타 대괄호로 시작하는 것들
 }
 
