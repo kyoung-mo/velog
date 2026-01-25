@@ -4,8 +4,6 @@
 </li>
 <li><p><a href="file://C:/Users/KCCISTC/Desktop/stm32f411ce.pdf">STM32F411xC STM32F411xE.pdf</a></p>
 </li>
-<li><p><a href="https://file.notion.so/f/f/6d8dfb15-0001-489c-860f-715cf05a57d7/5ee707b6-23b7-42ce-84be-819ae824cc9c/19168.pdf?table=block&amp;id=2eec5962-3e61-8033-9763-c77a0d0694d1&amp;spaceId=6d8dfb15-0001-489c-860f-715cf05a57d7&amp;expirationTimestamp=1768953600000&amp;signature=jvx3xyu6vF4WrKcly2TfHD-3N6ZZIzSJAWtdqm1qR9g&amp;downloadName=19168.pdf">NUCLEO-XXXXRX</a></p>
-</li>
 </ul>
 <hr />
 <h2 id="pins-legend">Pins Legend</h2>
